@@ -1,14 +1,34 @@
-import { View, Text, TouchableOpacity, StyleSheet, Button } from 'react-native';
-import React, { useState } from 'react';
-import { CameraView, CameraType } from 'expo-camera';  
+import { View, Text, Dimensions, TouchableOpacity, StyleSheet, Button} from 'react-native'
+import React from 'react'
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
+import { useState } from 'react';
 import { MaterialIcons } from '@expo/vector-icons';
-
+import { StatusBar } from 'expo-status-bar';
 const login = () => {
   const [facing, setFacing] = useState<CameraType>('back');
-  const [cameraVisible, setCameraVisible] = useState(false);
+  const [permission, requestPermission] = useCameraPermissions();
+  const [cameraVisible, setCameraVisible] = useState(false); 
+
+  if (!permission) {
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    return (
+      <View style={styles.container}>
+         <StatusBar style="light" /> 
+        <View style={styles.navbar}>
+          <Text style={styles.navText}>Escanear</Text>
+        </View>
+        <Text style={styles.message}>Necesita dar permisos para usar la cámara</Text>
+        <Button onPress={requestPermission} title="Dar permiso" />
+        <StatusBar style="light" />
+      </View>
+    );
+  }
 
   function startCamera() {
-    setCameraVisible(true); // Muestra la cámara cuando el usuario presione "Escanear"
+    setCameraVisible(true); 
   }
 
   function goBack() {
@@ -21,8 +41,8 @@ const login = () => {
         <Text style={styles.navText}>Escanear</Text>
         {cameraVisible && (
           <TouchableOpacity style={styles.backButton} onPress={goBack}>
-            <MaterialIcons name="exit-to-app" size={30} color="#FFFFFF" />
-          </TouchableOpacity>
+          <MaterialIcons name="exit-to-app" size={30} color="#FFFFFF" />
+        </TouchableOpacity>
         )}
       </View>
 
@@ -44,8 +64,7 @@ const login = () => {
       )}
     </View>
   );
-};
-
+}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -101,4 +120,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default login;
+export default login
