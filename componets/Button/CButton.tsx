@@ -1,9 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
-
 /// rn
 import { Button } from "react-native-paper";
-
 interface CButton {
   buttonColor: string;
   text?: string;
@@ -16,7 +14,6 @@ interface CButton {
   onPress?: () => void;
   children?: React.ReactNode; // Add children here
 }
-
 export const CButton = ({
   text,
   buttonColor,
@@ -43,5 +40,4 @@ export const CButton = ({
     </Button>
   );
 };
-
 const styles = StyleSheet.create({});
