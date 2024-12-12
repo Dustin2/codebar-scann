@@ -1,70 +1,77 @@
-import { View, Text, Dimensions, TouchableOpacity, StyleSheet, Button} from 'react-native'
-import React from 'react'
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { useState } from 'react';
-import { MaterialIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Button, TextInput, Alert } from 'react-native';
+import { Camera, CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { StatusBar } from 'expo-status-bar';
-const home = () => {
+
+const Home = () => {
+  const [cameraVisible, setCameraVisible] = useState(false);
   const [facing, setFacing] = useState<CameraType>('back');
+ 
+  const [scannedData, setScannedData] = useState('');
   const [permission, requestPermission] = useCameraPermissions();
-  const [cameraVisible, setCameraVisible] = useState(false); 
 
-  if (!permission) {
-    return <View />;
-  }
-
+  // Validar permisos
+  if (!permission) return <View />;
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-         <StatusBar style="light" /> 
-        <View style={styles.navbar}>
-          <Text style={styles.navText}>Escanear</Text>
-        </View>
-        <Text style={styles.message}>Necesita dar permisos para usar la cámara</Text>
-        <Button onPress={requestPermission} title="Dar permiso" />
         <StatusBar style="light" />
+        <Text style={styles.message}>Es necesario otorgar permisos para usar la cámara.</Text>
+        <Button onPress={requestPermission} title="Dar permisos" />
       </View>
     );
   }
 
-  function startCamera() {
-    setCameraVisible(true); 
-  }
-
-  function goBack() {
-    setCameraVisible(false); 
-  }
+  // Manejar el escaneo
+  const handleBarCodeScanned = ({ type, data }) => {
+    setCameraVisible(false); // Ocultar la cámara
+    setScannedData(data); // Guardar datos escaneados
+    Alert.alert('Código Escaneado', `Tipo: ${type}\nDatos: ${data}`);
+  };
 
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.navbar}>
         <Text style={styles.navText}>Escanear</Text>
-        {cameraVisible && (
-          <TouchableOpacity style={styles.backButton} onPress={goBack}>
-          <MaterialIcons name="exit-to-app" size={30} color="#FFFFFF" />
-        </TouchableOpacity>
-        )}
       </View>
 
-      {/* Muestra los botones "Escanear" y "Asignar posición" si la cámara no está visible */}
+      {/* Contenido */}
       {!cameraVisible ? (
         <View style={styles.content}>
-          <TouchableOpacity style={styles.button} onPress={startCamera}>
-            <Text style={styles.buttonText}>Escanear</Text>
+          <TouchableOpacity style={styles.button} onPress={() => setCameraVisible(true)}>
+            <Text style={styles.buttonText}>Activar Cámara</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Asignar posición</Text>
-          </TouchableOpacity>
+
+          {/* Mostrar resultado escaneado */}
+          <TextInput
+            style={styles.input}
+            value={scannedData}
+            placeholder="Resultado del escaneo"
+            editable={false}
+          />
         </View>
       ) : (
-        // Muestra la cámara y oculta los botones
-        <View style={styles.content}>
-          <CameraView style={styles.camera} facing={facing} />
+        <View style={styles.cameraContainer}>
+          <CameraView
+            style={styles.camera}
+            // type={CameraType.back}
+            // onBarCodeScanned={handleBarCodeScanned}
+            facing={facing} 
+          barcodeScannerSettings={{
+            barcodeTypes:[
+              'qr','aztec','codabar','code128','code39','datamatrix','ean13',
+            ]
+          }}
+          onBarcodeScanned={()=>{}}
+          />
+          <Button title="Cerrar Cámara" onPress={() => setCameraVisible(false)} />
         </View>
       )}
     </View>
   );
-}
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -75,26 +82,21 @@ const styles = StyleSheet.create({
     backgroundColor: '#002855',
     justifyContent: 'center',
     alignItems: 'center',
-    flexDirection: 'row',
-    position: 'relative',
-    paddingTop: 10, 
   },
   navText: {
     color: '#FFFFFF',
     fontSize: 18,
     fontWeight: 'bold',
   },
-  backButton: {
-    position: 'absolute',
-    right: 20, 
-    top: 15,  
-    padding: 10,
-  },
   content: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%',
+  },
+  cameraContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   camera: {
     flex: 1,
@@ -106,18 +108,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 50,
     borderRadius: 5,
     marginVertical: 10,
-    width: '80%',
-    alignItems: 'center',
   },
   buttonText: {
     color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: 'bold',
+  },
+  input: {
+    height: 40,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    padding: 10,
+    marginTop: 20,
+    width: '80%',
+    borderRadius: 5,
+    backgroundColor: '#FFF',
   },
   message: {
+    margin: 20,
     textAlign: 'center',
-    paddingBottom: 10,
   },
 });
 
-export default home
+export default Home;
