@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Button, TextInput, Alert } from 'react-native';
-import { Camera, CameraType, CameraView, useCameraPermissions } from 'expo-camera';
+import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert, Button } from 'react-native';
+import { useCameraPermissions, CameraView } from 'expo-camera';
 import { StatusBar } from 'expo-status-bar';
 
 const Home = () => {
   const [cameraVisible, setCameraVisible] = useState(false);
-  const [facing, setFacing] = useState<CameraType>('back');
- 
   const [scannedData, setScannedData] = useState('');
   const [permission, requestPermission] = useCameraPermissions();
 
@@ -55,15 +53,11 @@ const Home = () => {
         <View style={styles.cameraContainer}>
           <CameraView
             style={styles.camera}
-            // type={CameraType.back}
-            // onBarCodeScanned={handleBarCodeScanned}
-            facing={facing} 
-          barcodeScannerSettings={{
-            barcodeTypes:[
-              'qr','aztec','codabar','code128','code39','datamatrix','ean13',
-            ]
-          }}
-          onBarcodeScanned={()=>{}}
+            facing="back" // Valor directamente como string
+            barcodeScannerSettings={{
+              barcodeTypes: ['qr'], // Escaneo solo para QR
+            }}
+            onBarcodeScanned={handleBarCodeScanned}
           />
           <Button title="Cerrar Cámara" onPress={() => setCameraVisible(false)} />
         </View>
