@@ -1,30 +1,54 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, TextInput, Alert, Button } from 'react-native';
-import { useCameraPermissions, CameraView } from 'expo-camera';
-import { StatusBar } from 'expo-status-bar';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+  Alert,
+  Button,
+} from "react-native";
+import { useCameraPermissions, CameraView } from "expo-camera";
+import { StatusBar } from "expo-status-bar";
 
+// import 'dotenv/config'
+// console.log(process.env)
 const Home = () => {
   const [cameraVisible, setCameraVisible] = useState(false);
-  const [scannedData, setScannedData] = useState('');
+  const [scannedData, setScannedData] = useState("");
   const [permission, requestPermission] = useCameraPermissions();
+  const [focus, setFocus] = useState<boolean>(true);
 
-  // Validar permisos
+  //focus camera every 2 secs
+  const focusCamera = () => {
+    setFocus(false);
+    setTimeout(() => {
+      setFocus(true);
+    }, 200);
+  };
+
+  // validate permissions
   if (!permission) return <View />;
   if (!permission.granted) {
     return (
       <View style={styles.container}>
         <StatusBar style="light" />
-        <Text style={styles.message}>Es necesario otorgar permisos para usar la cámara.</Text>
+        <Text style={styles.message}>
+          Es necesario otorgar permisos para usar la cámara.
+        </Text>
         <Button onPress={requestPermission} title="Dar permisos" />
       </View>
     );
   }
+  interface BarCodeScannedData {
+    type: string; //  remember use type  ( `number`, `string`, etc.)
+    data: string;
+  }
 
-  // Manejar el escaneo
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = ({ type, data }: BarCodeScannedData) => {
     setCameraVisible(false); // Ocultar la cámara
     setScannedData(data); // Guardar datos escaneados
-    Alert.alert('Código Escaneado', `Tipo: ${type}\nDatos: ${data}`);
+    Alert.alert("Código Escaneado", `Tipo: ${type}\nDatos: ${data}`);
   };
 
   return (
@@ -37,7 +61,10 @@ const Home = () => {
       {/* Contenido */}
       {!cameraVisible ? (
         <View style={styles.content}>
-          <TouchableOpacity style={styles.button} onPress={() => setCameraVisible(true)}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => setCameraVisible(true)}
+          >
             <Text style={styles.buttonText}>Activar Cámara</Text>
           </TouchableOpacity>
 
@@ -52,14 +79,53 @@ const Home = () => {
       ) : (
         <View style={styles.cameraContainer}>
           <CameraView
-            style={styles.camera}
+            autoFocus={focus}
+            style={{
+              position: "relative",
+              flex: 1,
+              width: "100%",
+              height: "100%",
+            }}
             facing="back" // Valor directamente como string
             barcodeScannerSettings={{
-              barcodeTypes: ['qr'], // Escaneo solo para QR
+              barcodeTypes: [
+                "aztec",
+                "ean13",
+                "ean8",
+                "qr",
+                "pdf417",
+                "upc_e",
+                "datamatrix",
+                "code39",
+                "code93",
+                "itf14",
+                "codabar",
+                "code128",
+                "upc_a",
+              ], // only support this types of barcode and qr
             }}
             onBarcodeScanned={handleBarCodeScanned}
+            // autofocus="on"
+            // BarcodeSize
+          >
+            {" "}
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={focusCamera}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                backgroundColor: "transparent",
+              }}
+            />
+          </CameraView>
+          <Button
+            title="Cerrar Cámara"
+            onPress={() => setCameraVisible(false)}
           />
-          <Button title="Cerrar Cámara" onPress={() => setCameraVisible(false)} />
         </View>
       )}
     </View>
@@ -69,57 +135,58 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: "#F5F5F5",
   },
   navbar: {
     height: 60,
-    backgroundColor: '#002855',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#002855",
+    justifyContent: "center",
+    alignItems: "center",
   },
   navText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   cameraContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
   camera: {
     flex: 1,
-    width: '100%',
+    width: "100%",
+    height: "100%",
   },
   button: {
-    backgroundColor: '#002855',
+    backgroundColor: "#002855",
     paddingVertical: 15,
     paddingHorizontal: 50,
     borderRadius: 5,
     marginVertical: 10,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 16,
   },
   input: {
     height: 40,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderWidth: 1,
     padding: 10,
     marginTop: 20,
-    width: '80%',
+    width: "80%",
     borderRadius: 5,
-    backgroundColor: '#FFF',
+    backgroundColor: "#FFF",
   },
   message: {
     margin: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
 
