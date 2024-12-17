@@ -1,9 +1,19 @@
+//react
 import React from "react";
-import { View } from "react-native";
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+
+//react native
 import { SafeAreaView } from "react-native-safe-area-context";
+//expo router
+import { Stack } from "expo-router";
+
+//colors
 import { Colors } from "@/constants/Colors";
+
+///expo splash screens
+
+import * as SplashScreen from "expo-splash-screen";
+import * as Font from "expo-font";
+
 
 const RootLayout = () => {
   return (

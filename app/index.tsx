@@ -1,72 +1,39 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Alert } from "react-native";
+import { View, Text, StyleSheet, Alert, ActivityIndicator } from "react-native";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-// Componentes personalizados
 import { CTextInput } from "../componets/Input/CTextinput";
 import { CButton } from "../componets/Button/CButton";
-// Colores
 import { Colors } from "@/constants/Colors";
+import { loginUser } from "../assets/api/loginUser"
 
-{
-  console.log(Constants.manifest2.cookie);
-}
-
-//constans from dotenv
-import Constants from "expo-constants";
 const Index = () => {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // Función para hacer login
   const handleLogin = async () => {
     if (!user || !password) {
-      Alert.alert("Error", "Por favor ingresa usuario y contraseña!");
+      Alert.alert("Error", "Por favor ingresa usuario y contraseña.");
       return;
     }
 
+    setLoading(true);
     try {
-      // Define los headers
-      const myHeaders = new Headers();
-      myHeaders.append("Authorization", "Basic Og==");
-      myHeaders.append("Cookie", Constants.cookie);
+      const result = await loginUser(user, password);
 
-      // Define los datos del formulario
-      const formdata = new FormData();
-      formdata.append("user", user);
-      formdata.append("password", password);
-
-      // Configura las opciones de la solicitud
-      const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: formdata,
-        redirect: "follow",
-      };
-
-      // Realiza la solicitud
-      const response = await fetch(
-        
-        "https://qa.grupohazesa.mx/sistema1/index.php/Rest/LoginFlutter",
-        requestOptions
-      );
-
-      // Verifica la respuesta
-      if (!response.ok) {
-        throw new Error("Error en la autenticación. Intenta de nuevo.");
+      // Verificamos si el servidor indica que el usuario existe
+      if (result.Error === 1) {
+        Alert.alert("Error", result.Mensaje || "Usuario o contraseña incorrectos.");
+      } else {
+        Alert.alert("Éxito", "Inicio de sesión exitoso.");
+        router.push("/home");
       }
-
-      const result = await response.text();
-      console.log(result);
-      // Alert.alert("Resultado", result);
-      // Muestra el resultado en una alerta si el resultado es correcto
-      router.push("/home");
-      // Navegar o realizar acción adicional aquí
-      // router.push("/someRoute"); // Puedes redirigir a otra pantalla
     } catch (error) {
-      console.error(error);
-      Alert.alert("Error", error.message); // Muestra un error en caso de fallo
+      Alert.alert("Error", error.message || "Ocurrió un problema con el inicio de sesión.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,6 +41,7 @@ const Index = () => {
     <View style={styles.container}>
       <StatusBar style="dark" />
       <Text style={styles.title}>GRUPO HAZESA</Text>
+
       <CTextInput
         label="Usuario"
         value={user}
@@ -84,6 +52,7 @@ const Index = () => {
         autoCapitalize="none"
         rightIcon="account"
       />
+
       <CTextInput
         label="Contraseña"
         value={password}
@@ -93,15 +62,20 @@ const Index = () => {
         secureTextEntry
         rightIcon="eye"
       />
+
       <View style={styles.containerButtons}>
-        <CButton
-          mode="contained"
-          onPress={handleLogin}
-          style={styles.button}
-          buttonColor={Colors.blue}
-          text="Ingresar"
-          textColor="white"
-        />
+        {loading ? (
+          <ActivityIndicator size="large" color={Colors.blue} />
+        ) : (
+          <CButton
+            mode="contained"
+            onPress={handleLogin}
+            style={styles.button}
+            buttonColor={Colors.blue}
+            text="Ingresar"
+            textColor="white"
+          />
+        )}
       </View>
     </View>
   );

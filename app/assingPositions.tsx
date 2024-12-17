@@ -7,7 +7,7 @@ const AssingPositions = () => {
       <Text style={styles.title}>Asigna una posición al rollo</Text>
       <View style={styles.grid}>
         {/* Populate this grid with the positions */}
-        {Array.from(Array(5).keys()).map((row) => (
+          {Array.from(Array(5).keys()).map((row) => (
           <View key={row} style={styles.row}>
             {Array.from(Array(8).keys()).map((col) => (
               <View key={col} style={styles.box}>

@@ -31,16 +31,19 @@
       [
         "expo-splash-screen",
         {
+          "backgroundColor": "#232323",
           "image": "./assets/images/logo.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "dark": {
+            "image": "./assets/images/logo-2.jpg",
+            "backgroundColor": "#000000"
+          },
+          "imageWidth": 200
         }
       ],
       [
         "expo-local-authentication",
         {
-          "faceIDPermission": "Allow $(PRODUCT_NAME) to use Face ID."
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to use FingerPrint or Face ID."
         }
       ]
     ],
