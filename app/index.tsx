@@ -27,7 +27,7 @@ const Index = () => {
       if (result.Error === 1) {
         Alert.alert("Error", result.Mensaje || "Usuario o contraseña incorrectos.");
       } else {
-        Alert.alert("Éxito", "Inicio de sesión exitoso.");
+        // Alert.alert("Éxito", "Inicio de sesión exitoso.");
         router.push("/home");
       }
     } catch (error) {

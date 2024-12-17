@@ -1,4 +1,7 @@
+// react
 import React, { useState } from "react";
+
+// rn
 import {
   View,
   Text,
@@ -9,8 +12,13 @@ import {
   Button,
   ActivityIndicator,
 } from "react-native";
+
+//expo api
 import { useCameraPermissions, CameraView } from "expo-camera";
 import { StatusBar } from "expo-status-bar";
+import { router } from "expo-router";
+
+// api
 import { getRolloByCodigo } from "../assets/api/RolloApi";
 
 const Home = () => {
@@ -19,7 +27,7 @@ const Home = () => {
   const [rolloData, setRolloData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
-  const [focus, setFocus] = useState<boolean>(true);
+  const [focus, setFocus] = useState(true);
 
   const focusCamera = () => {
     setFocus(false);
@@ -50,8 +58,9 @@ const Home = () => {
   }) => {
     setCameraVisible(false);
     setScannedData(data);
-    Alert.alert("Código Escaneado", `Tipo: ${type}\nDatos: ${data}`);
+    // Alert.alert("Código Escaneado", `Tipo: ${type}\nDatos: ${data}`);
     await fetchRolloData(data);
+    // router.push("/assingPositions");
   };
 
   const fetchRolloData = async (codigo: string) => {
@@ -68,7 +77,8 @@ const Home = () => {
       if (data.Error === 1) {
         Alert.alert("Rollo No Encontrado", data.Mensaje);
       } else {
-        Alert.alert("Éxito", "Datos obtenidos correctamente");
+        // Alert.alert("Éxito", "Datos obtenidos correctamente");
+        router.push("/assingPositions");
       }
     } catch (error) {
       Alert.alert("Error", "No se pudo obtener la información del rollo.");
@@ -114,8 +124,8 @@ const Home = () => {
           {/* Mostrar información del rollo */}
           {rolloData && (
             <View style={styles.resultContainer}>
-              <Text style={styles.resultTitle}>Información del Rollo:</Text>
-              <Text>{JSON.stringify(rolloData, null, 2)}</Text>
+              {/* <Text style={styles.resultTitle}>Información del Rollo:</Text> */}
+              {/* <Text>{JSON.stringify(rolloData, null, 2)}</Text> */}
             </View>
           )}
         </View>
