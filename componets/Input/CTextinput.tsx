@@ -1,54 +1,61 @@
 import React from "react";
-import { StyleSheet,ViewStyle,StyleProp } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { TextInput } from "react-native-paper";
 
-interface CTextinputProps {
-  label?: string;
-  value?: string;
-//   onChange?: () => void;
-  mode?: "flat" | "outlined";
-  keyboardType?:
-    | "default"
-    | "numeric"
-    | "email-address"
-    | "phone-pad"
-    | "number-pad"
-    | "decimal-pad";
-  // onChange?: ()=> void
-  
-  containerStyle?: StyleProp<ViewStyle>; // Allow customizing the container
+//interfaces
+import { CTextInputProps } from "../../interfaces/CTextInputProps";
 
-  disable?: boolean;
-  onChangeText: (text: string) => void; // Callback for handling text changes
-}
-export const CTextInput = ({
+export const CTextInput: React.FC<CTextInputProps> = ({
   label,
   value,
-//   onChange,
-containerStyle,
-  mode,
-  keyboardType,
-  disable,
+  containerStyle,
+  mode = "outlined",
+  style,
+  keyboardType = "default",
+  disable = false,
   onChangeText,
-}: CTextinputProps) => {
+  leftIcon,
+  onRightIconPress,
+  rightIcon,
+}) => {
   return (
-    <TextInput
-      label={label}
-      disabled={disable}
-      value={value}
-      onChangeText={onChangeText}
-      mode={mode}
-      keyboardType={keyboardType}
-      style={styles.inputs}
-    />
+    <View style={[styles.container, containerStyle]}>
+      <TextInput
+        label={label}
+        disabled={disable}
+        value={value}
+        onChangeText={onChangeText}
+        mode={mode}
+        keyboardType={keyboardType}
+        style={[styles.input, style]}
+        left={
+          leftIcon ? (
+            <TextInput.Icon icon={leftIcon} style={styles.icon} />
+          ) : undefined
+        }
+        right={
+          rightIcon ? (
+            <TextInput.Icon
+              icon={rightIcon}
+              onPress={onRightIconPress}
+              style={styles.icon}
+            />
+          ) : undefined
+        }
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  inputs: {
-    // flex: 1,
-    padding: 1,
-    // marginBottom: 15,
-    margin: 13,
+  container: {
+    marginVertical: 8, // Espaciado para el contenedor
+  },
+  input: {
+    padding: 8, // Espaciado interno del TextInput
+  },
+  icon: {
+    justifyContent: "center", // Centra el contenido verticalmente
+    alignItems: "center", // Centra el contenido horizontalmente
   },
 });

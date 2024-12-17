@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, StyleProp, TextStyle } from "react-native";
 /// rn
 import { Button } from "react-native-paper";
 interface CButton {
@@ -13,6 +13,7 @@ interface CButton {
   icon?: string;
   onPress?: () => void;
   children?: React.ReactNode; // Add children here
+  style?: StyleProp<TextStyle>; // Para personalizar los estilos del TextInput
 }
 export const CButton = ({
   text,
@@ -24,7 +25,8 @@ export const CButton = ({
   rippleColor,
   icon,
   onPress,
-  children
+  children,
+  style
 }: CButton) => {
   return (
     <Button
@@ -35,6 +37,7 @@ export const CButton = ({
       buttonColor={buttonColor}
       rippleColor={rippleColor}
       onPress={onPress}
+      style={style}
     >
       {children || text || null}
     </Button>

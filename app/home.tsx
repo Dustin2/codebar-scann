@@ -5,24 +5,27 @@ import {
   TouchableOpacity,
   StyleSheet,
   TextInput,
-  Alert,
+Alert,
   Button,
 } from "react-native";
 import { useCameraPermissions, CameraView } from "expo-camera";
 import { StatusBar } from "expo-status-bar";
 
+//interfaces
+import { BarCodeScannedData } from "../interfaces/BarCodeScannedData";
 // import 'dotenv/config'
 // console.log(process.env)
 const Home = () => {
   const [cameraVisible, setCameraVisible] = useState(false);
   const [scannedData, setScannedData] = useState("");
   const [permission, requestPermission] = useCameraPermissions();
-  const [focus, setFocus] = useState<boolean>(true);
+  const [focus, setFocus] = useState(true);
 
   //focus camera every 2 secs
   const focusCamera = () => {
     setFocus(false);
     setTimeout(() => {
+      // if need read how to fix read this https://github.com/expo/expo/issues/26869
       setFocus(true);
     }, 200);
   };
@@ -32,17 +35,13 @@ const Home = () => {
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-        <StatusBar style="light" />
+        <StatusBar style="auto" />
         <Text style={styles.message}>
           Es necesario otorgar permisos para usar la cámara.
         </Text>
         <Button onPress={requestPermission} title="Dar permisos" />
       </View>
     );
-  }
-  interface BarCodeScannedData {
-    type: string; //  remember use type  ( `number`, `string`, etc.)
-    data: string;
   }
 
   const handleBarCodeScanned = ({ type, data }: BarCodeScannedData) => {
@@ -108,7 +107,7 @@ const Home = () => {
             // autofocus="on"
             // BarcodeSize
           >
-            {" "}
+           
             <TouchableOpacity
               activeOpacity={1}
               onPress={focusCamera}

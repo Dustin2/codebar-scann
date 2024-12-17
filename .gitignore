@@ -8,8 +8,9 @@ node_modules/
 dist/
 web-build/
 expo-env.d.ts
-
+# .gitignore
 .env
+
 # Native
 *.orig.*
 *.jks

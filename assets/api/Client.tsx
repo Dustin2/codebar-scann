@@ -1,8 +1,7 @@
 import axios from "axios";
-
+import Constants from "expo-constants";
 const client = axios.create({
-  baseURL:
-    "http://qa.grupohazesa.com/sistema1/index.php/Rest/", //   replace here ur api
+  baseURL: Constants.URLM, //   replace here ur api
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",

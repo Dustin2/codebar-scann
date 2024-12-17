@@ -1,31 +1,34 @@
 import React from "react";
-import { View, Text } from "react-native";
-// import { Slot } from "expo-router";
-
+import { View } from "react-native";
 import { Stack } from "expo-router";
-import useAppRouter from "../hooks/useAppRouter";
+import { StatusBar } from "expo-status-bar";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "@/constants/Colors";
 
-const RootLayout = ({}) => {
-  const router = useAppRouter();
-
+const RootLayout = () => {
   return (
-    <Stack screenOptions={{}}>
-      {/* //al usar  slot de expo router como esta basado en flie system por defesto buscara al archivo index, en cualmmostrara, en este mismo estremos renderizando a n uestros archivos hijos */}
-
-      <Stack.Screen
-        name="index"
-        options={{
-          //this hide top title
+    <SafeAreaView style={{ flex: 1 }}>
+      {/* <StatusBar style="dark"  translucent backgroundColor={Colors.blue}/> */}
+      {/* Stack debe estar directamente dentro de SafeAreaView */}
+      <Stack
+        screenOptions={{
           headerShown: false,
         }}
-      />
-      <Stack.Screen
-        name="home"
-        options={{
-          headerShown: false,
-        }}
-      />
-    </Stack>
+      >
+        <Stack.Screen
+          name="index"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="home"
+          options={{
+            headerShown: false,
+          }}
+        />
+      </Stack>
+    </SafeAreaView>
   );
 };
 

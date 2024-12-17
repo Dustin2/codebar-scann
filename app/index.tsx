@@ -1,95 +1,108 @@
 import React, { useState } from "react";
-// rn
 import { View, Text, StyleSheet, Alert } from "react-native";
-// expo
 import { useRouter } from "expo-router";
-//
+import { StatusBar } from "expo-status-bar";
+// Componentes personalizados
 import { CTextInput } from "../componets/Input/CTextinput";
 import { CButton } from "../componets/Button/CButton";
+// Colores
+import { Colors } from "@/constants/Colors";
 
-//auth with fingerprint or face id
-import * as LocalAuthentication from "expo-local-authentication";
+{
+  console.log(Constants.manifest2.cookie);
+}
 
+//constans from dotenv
+import Constants from "expo-constants";
 const Index = () => {
-  const [email, setEmail] = useState("");
+  const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
-
   const router = useRouter();
 
-  const handleLogin = () => {
-    console.log("Email:", email);
-    console.log("Password:", password);
-    router.push("/home");
-  };
+  // Función para hacer login
+  const handleLogin = async () => {
+    if (!user || !password) {
+      Alert.alert("Error", "Por favor ingresa usuario y contraseña!");
+      return;
+    }
 
-  const handleBiometricAuth = async () => {
     try {
-      // Comprobar si la biometría está disponible
-      const isBiometricAvailable = await LocalAuthentication.hasHardwareAsync();
-      if (!isBiometricAvailable) {
-        Alert.alert("Error", "La autenticación biométrica no está disponible.");
-        return;
+      // Define los headers
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", "Basic Og==");
+      myHeaders.append("Cookie", Constants.cookie);
+
+      // Define los datos del formulario
+      const formdata = new FormData();
+      formdata.append("user", user);
+      formdata.append("password", password);
+
+      // Configura las opciones de la solicitud
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: formdata,
+        redirect: "follow",
+      };
+
+      // Realiza la solicitud
+      const response = await fetch(
+        
+        "https://qa.grupohazesa.mx/sistema1/index.php/Rest/LoginFlutter",
+        requestOptions
+      );
+
+      // Verifica la respuesta
+      if (!response.ok) {
+        throw new Error("Error en la autenticación. Intenta de nuevo.");
       }
 
-      // Comprobar si hay datos biométricos registrados
-      const isEnrolled = await LocalAuthentication.isEnrolledAsync();
-      if (!isEnrolled) {
-        Alert.alert("Error", "No hay datos biométricos registrados.");
-        return;
-      }
-
-      // Solicitar autenticación biométrica
-      const biometricAuth = await LocalAuthentication.authenticateAsync({
-        promptMessage: "Verifica tu identidad",
-        cancelLabel: "Cancelar",
-        fallbackLabel: "Usar contraseña",
-      });
-
-      if (biometricAuth.success) {
-        Alert.alert("Éxito", "Autenticación biométrica exitosa.");
-        router.push("/home"); // Navegar a la página home si es exitoso
-      } else {
-        Alert.alert("Error", "Autenticación biométrica fallida.");
-      }
+      const result = await response.text();
+      console.log(result);
+      // Alert.alert("Resultado", result);
+      // Muestra el resultado en una alerta si el resultado es correcto
+      router.push("/home");
+      // Navegar o realizar acción adicional aquí
+      // router.push("/someRoute"); // Puedes redirigir a otra pantalla
     } catch (error) {
-      console.error("Biometric Auth Error:", error);
-      Alert.alert("Error", "Hubo un problema con la autenticación biométrica.");
+      console.error(error);
+      Alert.alert("Error", error.message); // Muestra un error en caso de fallo
     }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back!</Text>
+      <StatusBar style="dark" />
+      <Text style={styles.title}>GRUPO HAZESA</Text>
       <CTextInput
-        label="Email"
-        value={email}
-        onChangeText={setEmail}
+        label="Usuario"
+        value={user}
+        onChangeText={setUser}
         style={styles.input}
         mode="outlined"
         keyboardType="email-address"
         autoCapitalize="none"
+        rightIcon="account"
       />
       <CTextInput
-        label="Password"
+        label="Contraseña"
         value={password}
         onChangeText={setPassword}
         style={styles.input}
         mode="outlined"
         secureTextEntry
+        rightIcon="eye"
       />
-      <CButton mode="contained" onPress={handleLogin} style={styles.button}>
-        Log In
-      </CButton>
-      <CButton
-        mode="contained"
-        onPress={handleBiometricAuth}
-        style={[styles.button, { backgroundColor: "#4CAF50" }]}
-      >
-        Log In with Biometrics
-      </CButton>
-      <Text style={styles.footerText} onPress={() => {}}>
-        Forgot Password?
-      </Text>
+      <View style={styles.containerButtons}>
+        <CButton
+          mode="contained"
+          onPress={handleLogin}
+          style={styles.button}
+          buttonColor={Colors.blue}
+          text="Ingresar"
+          textColor="white"
+        />
+      </View>
     </View>
   );
 };
@@ -99,6 +112,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingHorizontal: 20,
+  },
+  containerButtons: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
   },
   title: {
     fontSize: 24,
@@ -110,12 +128,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   button: {
-    marginTop: 10,
-  },
-  footerText: {
-    textAlign: "center",
-    marginTop: 20,
-    color: "gray",
+    marginBottom: 15,
+    marginTop: 15,
   },
 });
 
