@@ -1,49 +1,82 @@
 import React, { useState } from "react";
-// rn
-import { View, Text, StyleSheet } from "react-native";
-// expo
-import { useRouter } from 'expo-router'; // Corregir importación de useRouter
-//
+import { View, Text, StyleSheet, Alert, ActivityIndicator } from "react-native";
+import { useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { CTextInput } from "../componets/Input/CTextinput";
 import { CButton } from "../componets/Button/CButton";
+import { Colors } from "@/constants/Colors";
+import { loginUser } from "../assets/api/loginUser"
 
 const Index = () => {
-  const [email, setEmail] = useState("");
+  const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
-  
-  const router = useRouter(); // Inicializar el router con useRouter
-  
-  const handleLogin = () => {
-    console.log("Email:", email);
-    console.log("Password:", password);
-    // Realizar validaciones o lógica antes de la navegación
-    router.push('/home'); // Usar router.push correctamente
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleLogin = async () => {
+    if (!user || !password) {
+      Alert.alert("Error", "Por favor ingresa usuario y contraseña.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await loginUser(user, password);
+
+      // Verificamos si el servidor indica que el usuario existe
+      if (result.Error === 1) {
+        Alert.alert("Error", result.Mensaje || "Usuario o contraseña incorrectos.");
+      } else {
+        // Alert.alert("Éxito", "Inicio de sesión exitoso.");
+        router.push("/home");
+      }
+    } catch (error) {
+      Alert.alert("Error", error.message || "Ocurrió un problema con el inicio de sesión.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome Back!</Text>
+      <StatusBar style="dark" />
+      <Text style={styles.title}>GRUPO HAZESA</Text>
+
       <CTextInput
-        label="Email"
-        value={email}
-        onChangeText={setEmail}
+        label="Usuario"
+        value={user}
+        onChangeText={setUser}
         style={styles.input}
         mode="outlined"
         keyboardType="email-address"
         autoCapitalize="none"
+        rightIcon="account"
       />
+
       <CTextInput
-        label="Password"
+        label="Contraseña"
         value={password}
         onChangeText={setPassword}
         style={styles.input}
         mode="outlined"
         secureTextEntry
+        rightIcon="eye"
       />
-      <CButton mode="contained" onPress={handleLogin} style={styles.button}>
-        Log In
-      </CButton>
-      <Text style={styles.footerText} onPress={() => {}}>Forgot Password?</Text>
+
+      <View style={styles.containerButtons}>
+        {loading ? (
+          <ActivityIndicator size="large" color={Colors.blue} />
+        ) : (
+          <CButton
+            mode="contained"
+            onPress={handleLogin}
+            style={styles.button}
+            buttonColor={Colors.blue}
+            text="Ingresar"
+            textColor="white"
+          />
+        )}
+      </View>
     </View>
   );
 };
@@ -53,6 +86,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingHorizontal: 20,
+  },
+  containerButtons: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
   },
   title: {
     fontSize: 24,
@@ -64,12 +102,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   button: {
-    marginTop: 10,
-  },
-  footerText: {
-    textAlign: "center",
-    marginTop: 20,
-    color: "gray",
+    marginBottom: 15,
+    marginTop: 15,
   },
 });
 
