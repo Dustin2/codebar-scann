@@ -7,19 +7,20 @@ import {
   TextInput,
   Alert,
   Button,
+  ActivityIndicator,
 } from "react-native";
 import { useCameraPermissions, CameraView } from "expo-camera";
 import { StatusBar } from "expo-status-bar";
+import { getRolloByCodigo } from "../assets/api/rolloApi";
 
-// import 'dotenv/config'
-// console.log(process.env)
 const Home = () => {
   const [cameraVisible, setCameraVisible] = useState(false);
-  const [scannedData, setScannedData] = useState("");
+  const [scannedData, setScannedData] = useState(""); // Guarda el valor escaneado o ingresado
+  const [rolloData, setRolloData] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [permission, requestPermission] = useCameraPermissions();
   const [focus, setFocus] = useState<boolean>(true);
 
-  //focus camera every 2 secs
   const focusCamera = () => {
     setFocus(false);
     setTimeout(() => {
@@ -27,7 +28,6 @@ const Home = () => {
     }, 200);
   };
 
-  // validate permissions
   if (!permission) return <View />;
   if (!permission.granted) {
     return (
@@ -40,27 +40,46 @@ const Home = () => {
       </View>
     );
   }
-  interface BarCodeScannedData {
-    type: string; //  remember use type  ( `number`, `string`, etc.)
-    data: string;
-  }
 
-  const handleBarCodeScanned = ({ type, data }: BarCodeScannedData) => {
-    setCameraVisible(false); // Ocultar la cámara
-    setScannedData(data); // Guardar datos escaneados
+  const handleBarCodeScanned = async ({ type, data }: { type: string; data: string }) => {
+    setCameraVisible(false);
+    setScannedData(data);
     Alert.alert("Código Escaneado", `Tipo: ${type}\nDatos: ${data}`);
+    await fetchRolloData(data);
+  };
+
+  const fetchRolloData = async (codigo: string) => {
+    if (!codigo) {
+      Alert.alert("Error", "Por favor, ingresa un código válido.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const data = await getRolloByCodigo(codigo);
+      setRolloData(data);
+
+      if (data.Error === 1) {
+        Alert.alert("Rollo No Encontrado", data.Mensaje);
+      } else {
+        Alert.alert("Éxito", "Datos obtenidos correctamente");
+      }
+    } catch (error) {
+      Alert.alert("Error", "No se pudo obtener la información del rollo.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.navbar}>
         <Text style={styles.navText}>Escanear</Text>
       </View>
 
-      {/* Contenido */}
       {!cameraVisible ? (
         <View style={styles.content}>
+          {/* Botón para activar la cámara */}
           <TouchableOpacity
             style={styles.button}
             onPress={() => setCameraVisible(true)}
@@ -68,58 +87,54 @@ const Home = () => {
             <Text style={styles.buttonText}>Activar Cámara</Text>
           </TouchableOpacity>
 
-          {/* Mostrar resultado escaneado */}
+          {/* Caja de texto editable */}
           <TextInput
             style={styles.input}
             value={scannedData}
-            placeholder="Resultado del escaneo"
-            editable={false}
+            placeholder="Ingresa el código manualmente"
+            onChangeText={(text) => setScannedData(text)}
           />
+
+          {/* Botón para buscar rollo */}
+          <TouchableOpacity
+            style={styles.searchButton}
+            onPress={() => fetchRolloData(scannedData)}
+          >
+            <Text style={styles.buttonText}>Buscar Rollo</Text>
+          </TouchableOpacity>
+
+          {loading && <ActivityIndicator size="large" color="#0000ff" />}
+
+          {/* Mostrar información del rollo */}
+          {rolloData && (
+            <View style={styles.resultContainer}>
+              <Text style={styles.resultTitle}>Información del Rollo:</Text>
+              <Text>{JSON.stringify(rolloData, null, 2)}</Text>
+            </View>
+          )}
         </View>
       ) : (
         <View style={styles.cameraContainer}>
           <CameraView
             autoFocus={focus}
-            style={{
-              position: "relative",
-              flex: 1,
-              width: "100%",
-              height: "100%",
-            }}
-            facing="back" // Valor directamente como string
+            style={styles.camera}
+            facing="back"
             barcodeScannerSettings={{
               barcodeTypes: [
-                "aztec",
+                "qr",
+                "code128",
                 "ean13",
                 "ean8",
-                "qr",
-                "pdf417",
-                "upc_e",
-                "datamatrix",
                 "code39",
-                "code93",
-                "itf14",
-                "codabar",
-                "code128",
-                "upc_a",
-              ], // only support this types of barcode and qr
+                "upc_e",
+              ],
             }}
             onBarcodeScanned={handleBarCodeScanned}
-            // autofocus="on"
-            // BarcodeSize
           >
-            {" "}
             <TouchableOpacity
               activeOpacity={1}
               onPress={focusCamera}
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                backgroundColor: "transparent",
-              }}
+              style={styles.cameraOverlay}
             />
           </CameraView>
           <Button
@@ -153,18 +168,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  cameraContainer: {
-    flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center",
-  },
-  camera: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-  },
   button: {
     backgroundColor: "#002855",
+    paddingVertical: 15,
+    paddingHorizontal: 50,
+    borderRadius: 5,
+    marginVertical: 10,
+  },
+  searchButton: {
+    backgroundColor: "#28A745",
     paddingVertical: 15,
     paddingHorizontal: 50,
     borderRadius: 5,
@@ -184,9 +196,35 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: "#FFF",
   },
-  message: {
-    margin: 20,
-    textAlign: "center",
+  resultContainer: {
+    marginTop: 20,
+    padding: 15,
+    backgroundColor: "#f5f5f5",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  resultTitle: {
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  cameraContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+  camera: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
+  cameraOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "transparent",
   },
 });
 

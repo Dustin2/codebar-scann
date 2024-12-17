@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // rn
 import { View, Text, StyleSheet, Alert } from "react-native";
 // expo
@@ -6,7 +6,6 @@ import { useRouter } from "expo-router";
 //
 import { CTextInput } from "../componets/Input/CTextinput";
 import { CButton } from "../componets/Button/CButton";
-
 //auth with fingerprint or face id
 import * as LocalAuthentication from "expo-local-authentication";
 
