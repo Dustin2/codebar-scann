@@ -1,17 +1,28 @@
+import client from "./Client";
 import axios from "axios";
-import { BASE_URL } from "@env"; // Importamos la URL base desde el archivo de configuración
 
 export const loginUser = async (user: string, password: string) => {
   try {
-    // Realizamos la solicitud POST
-    const response = await axios.post(`${BASE_URL}/LoginFlutter`, {
-      user,
-      password,
-    });
+    // Created  instance of FormData
+    const formData = new FormData();
+    formData.append("user", user);
+    formData.append("password", password);
 
-    return response.data; // Devolvemos los datos de la respuesta
+    // Verify format content
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}: ${value}`);
+    }
+    const response = await client.post("LoginFlutter", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data; 
   } catch (error) {
     console.error("Error en la autenticación:", error);
+    if (axios.isAxiosError(error)) {
+      console.error("Detalles del error (Axios):", error.response?.data);
+    }
     throw new Error("Error en la autenticación. Verifica tus datos.");
   }
 };
