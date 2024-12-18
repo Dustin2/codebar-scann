@@ -22,7 +22,7 @@
     "axios": "^1.7.9",
     "babel-plugin-transform-inline-environment-variables": "^0.4.4",
     "dotenv": "^16.4.7",
-    "expo": "~52.0.19",
+    "expo": "^52.0.19",
     "expo-blur": "~14.0.1",
     "expo-camera": "~16.0.10",
     "expo-constants": "~17.0.3",
@@ -62,7 +62,7 @@
     "jest-expo": "~52.0.2",
     "react-native-dotenv": "^3.4.11",
     "react-test-renderer": "18.3.1",
-    "typescript": "^5.3.3"
+    "typescript": "^5.7.2"
   },
   "private": true
 }

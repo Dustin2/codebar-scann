@@ -14,7 +14,6 @@ import { Colors } from "@/constants/Colors";
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 
-
 const RootLayout = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -34,7 +33,7 @@ const RootLayout = () => {
         <Stack.Screen
           name="home"
           options={{
-            headerShown: false,
+            headerShown: true,
           }}
         />
       </Stack>

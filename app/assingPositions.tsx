@@ -1,58 +1,125 @@
-// react
 import React, { useState } from "react";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Alert,
+  ActivityIndicator,
+  ScrollView,
+} from "react-native";
+import { Button, TextInput } from "react-native-paper";
+import {
+  getPositions,
+  getLayers,
+  getRows,
+} from "@/assets/api/positionsContainer"; // Asegúrate de que esta función esté bien implementada
 
-//rn
-import { View, StyleSheet, Text } from "react-native";
-//rn paper
-import { List, Button } from "react-native-paper";
+const AssignPositions = () => {
+  const [loading, setLoading] = useState(false);
+  const [text, setText] = useState("");
+  const [data, setData] = useState<string | null>(null);
+  const [data2, setData2] = useState<string | null>(null);
+  const [data3, setData3] = useState<string | null>(null);
 
-//interfaces
-import { DropdownItemProps } from "@/interfaces/DropdownItemProps";
-
-const DropdownItem: DropdownItemProps = ({ title, isOpen, onPress }) => {
-  return (
-    <List.Accordion
-      title={title}
-      expanded={isOpen}
-      onPress={onPress}
-      style={styles.accordion}
-    >
-      <List.Item title="Contenido desplegable" />
-    </List.Accordion>
-  );
-};
-
-const home = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const handlePress = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+  const fetchData = async (codigo: string) => {
+    if (!codigo) {
+      Alert.alert("Error", "Por favor, ingresa un código válido.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await getPositions(codigo); // Llama a tu API
+      // const response1 = await getPositions(codigo); // Llama a tu API
+      // const response2 = await getPositions(codigo); // Llama a tu API
+      setData(JSON.stringify(response, null, 2)); // Convierte el JSON en string para mostrar
+      if (response.error === 1) {
+        Alert.alert("Error", response.message);
+      } else {
+        Alert.alert("Éxito", "Datos obtenidos correctamente");
+      }
+    } catch (error) {
+      Alert.alert("Error", "No se pudo obtener la información.");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchData2 = async (codigo: string) => {
+    if (!codigo) {
+      Alert.alert("Error", "Por favor, ingresa un código válido.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await getRows(codigo); // Llama a tu API
+      // const response1 = await getPositions(codigo); // Llama a tu API
+      // const response2 = await getPositions(codigo); // Llama a tu API
+      setData2(JSON.stringify(response, null, 2)); // Convierte el JSON en string para mostrar
+      if (response.error === 1) {
+        Alert.alert("Error", response.message);
+      } else {
+        Alert.alert("Éxito", "Datos obtenidos correctamente");
+      }
+    } catch (error) {
+      Alert.alert("Error", "No se pudo obtener la información.");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchData3 = async (codigo: string) => {
+    if (!codigo) {
+      Alert.alert("Error", "Por favor, ingresa un código válido.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await getLayers(codigo); // Llama a tu API
+      // const response1 = await getPositions(codigo); // Llama a tu API
+      // const response2 = await getPositions(codigo); // Llama a tu API
+      setData3(JSON.stringify(response, null, 2)); // Convierte el JSON en string para mostrar
+      if (response.error === 1) {
+        Alert.alert("Error", response.message);
+      } else {
+        Alert.alert("Éxito", "Datos obtenidos correctamente");
+      }
+    } catch (error) {
+      Alert.alert("Error", "No se pudo obtener la información.");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Asigna una posición al rollo</Text>
-      {["Fila 1", "Fila 2", "Fila 3", "Fila 4", "Fila 5"].map(
-        (title, index) => (
-          <DropdownItem
-            key={index}
-            title={title}
-            isOpen={openIndex === index}
-            onPress={() => handlePress(index)}
-          />
-        )
-      )}
+      <TextInput
+        label="Código"
+        value={text}
+        onChangeText={setText}
+        style={styles.input}
+      />
       <Button
         mode="contained"
+        onPress={() => {
+          fetchData(text), fetchData2(text), fetchData3(text);
+        }}
         style={styles.button}
-        onPress={() => console.log("Siguiente")}
+        disabled={loading}
       >
-        Siguiente
+        {loading ? <ActivityIndicator color="white" /> : "Obtener datos"}
       </Button>
-    </View>
+
+      {data && <Text style={styles.result}>{data}</Text>}
+      {/* {data && <Text style={styles.result}>{data2}</Text>} */}
+      {data && <Text style={styles.result}>{data3}</Text>}
+    </ScrollView>
   );
 };
-export default home;
+
+export default AssignPositions;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -66,17 +133,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: "#00296b",
   },
-  accordion: {
-    backgroundColor: "#ffffff",
-    borderRadius: 5,
-    marginBottom: 10,
-    elevation: 2,
+  input: {
+    marginBottom: 20,
   },
   button: {
     marginTop: 20,
     borderRadius: 5,
     backgroundColor: "#00296b",
   },
+  result: {
+    marginTop: 20,
+    fontSize: 16,
+    color: "#333",
+  },
 });
-
-// export default home;

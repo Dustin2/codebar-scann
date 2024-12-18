@@ -22,7 +22,7 @@ const Index = () => {
     setLoading(true);
     try {
       const result = await loginUser(user, password);
-      // validate with  variable
+      // validate with success variable
       if (result?.Exito) {
         Alert.alert("Éxito", "Inicio de sesión exitoso.");
         router.push("/home");
@@ -83,6 +83,16 @@ const Index = () => {
           />
         )}
       </View>
+      <CButton
+        mode="contained"
+        onPress={() => {
+          router.push("/assingPositions");
+        }}
+        style={styles.button}
+        buttonColor={Colors.blue}
+        text="posiciones"
+        textColor="white"
+      />
     </View>
   );
 };

@@ -22,7 +22,6 @@ import { router } from "expo-router";
 import { getRolloByCodigo } from "../assets/api/RolloApi";
 
 const Home = () => {
-  
   const [cameraVisible, setCameraVisible] = useState(false);
   const [scannedData, setScannedData] = useState(""); // Guarda el valor escaneado o ingresado
   const [rolloData, setRolloData] = useState(null);
@@ -93,7 +92,6 @@ const Home = () => {
       <View style={styles.navbar}>
         <Text style={styles.navText}>Escanear</Text>
         {/* <Text style={styles.navText}>Escanear</Text> */}
-        
       </View>
 
       {!cameraVisible ? (
@@ -160,6 +158,12 @@ const Home = () => {
             title="Cerrar Cámara"
             onPress={() => setCameraVisible(false)}
           />
+          {/* <Button
+            title="Cerrar Cámara"
+            onPress={() => {
+              router.push("/assingPositions");
+            }}
+          /> */}
         </View>
       )}
     </View>
