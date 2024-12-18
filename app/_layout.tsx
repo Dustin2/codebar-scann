@@ -37,6 +37,12 @@ const RootLayout = () => {
             headerShown: false,
           }}
         />
+          <Stack.Screen
+          name="dataRollo"
+          options={{
+            headerShown: true,
+          }}
+        />
       </Stack>
     </SafeAreaView>
   );

@@ -79,7 +79,11 @@ const Home = () => {
         Alert.alert("Rollo No Encontrado", data.Mensaje);
       } else {
         // Alert.alert("Éxito", "Datos obtenidos correctamente");
-        router.push("/assingPositions");
+        //router.push("/assingPositions");
+        router.push({
+          pathname: "/dataRollo",
+          params: { rolloData: JSON.stringify(data) },
+        });
       }
     } catch (error) {
       Alert.alert("Error", "No se pudo obtener la información del rollo.");
