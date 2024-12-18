@@ -22,6 +22,7 @@ import { router } from "expo-router";
 import { getRolloByCodigo } from "../assets/api/RolloApi";
 
 const Home = () => {
+  
   const [cameraVisible, setCameraVisible] = useState(false);
   const [scannedData, setScannedData] = useState(""); // Guarda el valor escaneado o ingresado
   const [rolloData, setRolloData] = useState(null);
@@ -40,7 +41,7 @@ const Home = () => {
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-        <StatusBar style="light" />
+        <StatusBar style="dark" />
         <Text style={styles.message}>
           Es necesario otorgar permisos para usar la cámara.
         </Text>
@@ -60,7 +61,7 @@ const Home = () => {
     setScannedData(data);
     // Alert.alert("Código Escaneado", `Tipo: ${type}\nDatos: ${data}`);
     await fetchRolloData(data);
-    // router.push("/assingPositions");
+    router.push("/assingPositions");
   };
 
   const fetchRolloData = async (codigo: string) => {
@@ -91,6 +92,8 @@ const Home = () => {
     <View style={styles.container}>
       <View style={styles.navbar}>
         <Text style={styles.navText}>Escanear</Text>
+        <Text style={styles.navText}>Escanear</Text>
+        
       </View>
 
       {!cameraVisible ? (
@@ -167,6 +170,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F5F5F5",
+    // height: 100,
+    // width: 100,
+    // alignContent: "center",
+    // alignItems: "center",
   },
   navbar: {
     height: 60,
@@ -241,6 +248,13 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     backgroundColor: "transparent",
+  },
+  message: {
+    // flex: 1,
+    // alignItems: "center",
+    // width: 100,
+    // height: 120,
+    // verticalAlign: "bottom",
   },
 });
 

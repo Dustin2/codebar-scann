@@ -2,19 +2,9 @@ import React from "react";
 import { StyleSheet, View, StyleProp, TextStyle } from "react-native";
 /// rn
 import { Button } from "react-native-paper";
-interface CButton {
-  buttonColor: string;
-  text?: string;
-  mode: "text" | "outlined" | "contained" | "elevated" | "contained-tonal";
-  enable?: boolean;
-  dark?: boolean;
-  textColor: "black" | "white";
-  rippleColor?: string;
-  icon?: string;
-  onPress?: () => void;
-  children?: React.ReactNode; // Add children here
-  style?: StyleProp<TextStyle>; // Para personalizar los estilos del TextInput
-}
+
+import { CButtonProps } from "../../interfaces/CButtonProps";
+
 export const CButton = ({
   text,
   buttonColor,
@@ -26,8 +16,8 @@ export const CButton = ({
   icon,
   onPress,
   children,
-  style
-}: CButton) => {
+  style,
+}: CButtonProps) => {
   return (
     <Button
       mode={mode}
