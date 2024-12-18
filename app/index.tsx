@@ -36,6 +36,7 @@ const Index = () => {
     } finally {
       setLoading(false);
     }
+    console.log("gogog");
   };
 
   return (
