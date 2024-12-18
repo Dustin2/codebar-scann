@@ -92,7 +92,7 @@ const Home = () => {
     <View style={styles.container}>
       <View style={styles.navbar}>
         <Text style={styles.navText}>Escanear</Text>
-        <Text style={styles.navText}>Escanear</Text>
+        {/* <Text style={styles.navText}>Escanear</Text> */}
         
       </View>
 
