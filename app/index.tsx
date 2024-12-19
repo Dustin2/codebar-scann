@@ -4,14 +4,15 @@ import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { CTextInput } from "../componets/Input/CTextinput";
 import { CButton } from "../componets/Button/CButton";
-import { Colors } from "@/constants/Colors";
+import { Colors } from "../constants/Colors";
 import { loginUser } from "../assets/api/loginUser";
+
 const Index = () => {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [hidePass, setHidePass] = useState(true);
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async () => {
     if (!user || !password) {
@@ -22,7 +23,6 @@ const Index = () => {
     setLoading(true);
     try {
       const result = await loginUser(user, password);
-      // validate with success variable
       if (result?.Exito) {
         Alert.alert("Éxito", "Inicio de sesión exitoso.");
         router.push("/home");
@@ -54,8 +54,10 @@ const Index = () => {
         style={styles.input}
         mode="outlined"
         keyboardType="email-address"
-        autoCapitalize="none"
+        // autoCapitalize="none"
         rightIcon="account"
+        underlineColor={Colors.blue}
+        activeUnderlineColor={Colors.blue}
       />
 
       <CTextInput
@@ -64,9 +66,11 @@ const Index = () => {
         onChangeText={setPassword}
         style={styles.input}
         mode="outlined"
-        secureTextEntry={!showPassword}
-        rightIcon={showPassword ? "eye-off" : "eye"}
-        onRightIconPress={() => setShowPassword(!showPassword)}
+        secureTextEntry={hidePass}
+        rightIcon={hidePass ? "eye" : "eye-off"}
+        onRightIconPress={() => setHidePass(!hidePass)}
+        underlineColor={Colors.blue}
+        activeUnderlineColor={Colors.blue}
       />
 
       <View style={styles.containerButtons}>

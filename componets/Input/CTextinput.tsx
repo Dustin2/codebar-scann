@@ -17,6 +17,9 @@ export const CTextInput: React.FC<CTextInputProps> = ({
   leftIcon,
   onRightIconPress,
   rightIcon,
+  secureTextEntry,
+  activeUnderlineColor,
+  underlineColor,
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
@@ -27,6 +30,9 @@ export const CTextInput: React.FC<CTextInputProps> = ({
         onChangeText={onChangeText}
         mode={mode}
         keyboardType={keyboardType}
+        secureTextEntry={secureTextEntry}
+        underlineColor={underlineColor}
+        activeOutlineColor={activeUnderlineColor}
         style={[styles.input, style]}
         left={
           leftIcon ? (

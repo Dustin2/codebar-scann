@@ -12,7 +12,7 @@ import {
   getPositions,
   getLayers,
   getRows,
-} from "@/assets/api/positionsContainer"; // Asegúrate de que esta función esté bien implementada
+} from "../assets/api/positionsContainer"; // Asegúrate de que esta función esté bien implementada
 
 const AssignPositions = () => {
   const [loading, setLoading] = useState(false);

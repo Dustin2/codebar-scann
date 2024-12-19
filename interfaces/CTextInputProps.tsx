@@ -17,4 +17,7 @@ export interface CTextInputProps {
   leftIcon?: string; // Nombre del ícono para la izquierda
   rightIcon?: string; // Nombre del ícono para la derecha
   onRightIconPress?: () => void; // Acción al presionar el ícono derecho
+  underlineColor?: string;
+  activeUnderlineColor?: string;
+  secureTextEntry?: boolean;
 }

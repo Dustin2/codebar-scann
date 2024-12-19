@@ -1,4 +1,4 @@
-import client from "./Client";
+import client from "../api/Client";
 import axios from "axios";
 
 export const loginUser = async (user: string, password: string) => {
