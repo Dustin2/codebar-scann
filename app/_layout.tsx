@@ -1,13 +1,17 @@
 //react
 import React from "react";
 
-//react native
+//react native safe area
 import { SafeAreaView } from "react-native-safe-area-context";
+
+//rn navigation
+import { Header } from "@react-navigation/elements";
+
 //expo router
 import { Stack } from "expo-router";
 
 //colors
-import { Colors } from "@/constants/Colors";
+import { Colors } from "../constants/Colors";
 
 ///expo splash screens
 
@@ -22,6 +26,7 @@ const RootLayout = () => {
       <Stack
         screenOptions={{
           headerShown: false,
+          // header: (props) => <view style={{ height: 100 }}></view>,
         }}
       >
         <Stack.Screen
@@ -34,8 +39,19 @@ const RootLayout = () => {
           name="home"
           options={{
             headerShown: true,
+            headerTitle: "Inicio",
+            header: ({ options }) => (
+              <Header
+                {...options}
+                headerStyle={{
+                  height: 70,
+                  backgroundColor: Colors.darkBlue,
+                }}
+              />
+            ),
           }}
         />
+        <Stack.Screen name="assingPositions" options={{}} />
       </Stack>
     </SafeAreaView>
   );

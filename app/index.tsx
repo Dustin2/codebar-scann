@@ -1,18 +1,32 @@
+//react
 import React, { useState } from "react";
+
+//rn
 import { View, Text, StyleSheet, Alert, ActivityIndicator } from "react-native";
+//expo
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+
+//custom componets
 import { CTextInput } from "../componets/Input/CTextinput";
 import { CButton } from "../componets/Button/CButton";
+
+//constans
 import { Colors } from "../constants/Colors";
+
+//api
 import { loginUser } from "../assets/api/loginUser";
+import { TextInput } from "react-native-paper";
 
 const Index = () => {
+  //use for move entry screens
+  const router = useRouter();
+
+  // usestates
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [hidePass, setHidePass] = useState(true);
-  const router = useRouter();
 
   const handleLogin = async () => {
     if (!user || !password) {
@@ -59,18 +73,18 @@ const Index = () => {
         underlineColor={Colors.blue}
         activeUnderlineColor={Colors.blue}
       />
-
-      <CTextInput
+      <TextInput
         label="Contraseña"
         value={password}
         onChangeText={setPassword}
-        style={styles.input}
-        mode="outlined"
         secureTextEntry={hidePass}
-        rightIcon={hidePass ? "eye" : "eye-off"}
-        onRightIconPress={() => setHidePass(!hidePass)}
-        underlineColor={Colors.blue}
-        activeUnderlineColor={Colors.blue}
+        mode="outlined"
+        right={
+          <TextInput.Icon
+            icon={hidePass ? "eye" : "eye-off"}
+            onPress={() => setHidePass(!hidePass)}
+          />
+        }
       />
 
       <View style={styles.containerButtons}>
@@ -90,7 +104,7 @@ const Index = () => {
       <CButton
         mode="contained"
         onPress={() => {
-          router.push("/assingPositions");
+          router.push("/home");
         }}
         style={styles.button}
         buttonColor={Colors.blue}
@@ -120,6 +134,7 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 15,
+    // alignSelf:'center',
   },
   button: {
     marginBottom: 15,

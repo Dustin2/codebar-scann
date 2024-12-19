@@ -20,6 +20,7 @@ import { router } from "expo-router";
 
 // api
 import { getRolloByCodigo } from "../assets/api/RolloApi";
+import { Colors } from "../constants/Colors";
 
 const Home = () => {
   const [cameraVisible, setCameraVisible] = useState(false);
@@ -120,7 +121,9 @@ const Home = () => {
             <Text style={styles.buttonText}>Buscar Rollo</Text>
           </TouchableOpacity>
 
-          {loading && <ActivityIndicator size="large" color="#0000ff" />}
+          {loading && (
+            <ActivityIndicator size="large" color={Colors.darkGrey} />
+          )}
 
           {/* Mostrar información del rollo */}
           {rolloData && (
