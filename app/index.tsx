@@ -16,7 +16,6 @@ import { Colors } from "../constants/Colors";
 
 //api
 import { loginUser } from "../assets/api/loginUser";
-import { TextInput } from "react-native-paper";
 
 const Index = () => {
   //use for move entry screens
@@ -73,18 +72,17 @@ const Index = () => {
         underlineColor={Colors.blue}
         activeUnderlineColor={Colors.blue}
       />
-      <TextInput
+      <CTextInput
         label="Contraseña"
         value={password}
         onChangeText={setPassword}
-        secureTextEntry={hidePass}
+        style={styles.input}
         mode="outlined"
-        right={
-          <TextInput.Icon
-            icon={hidePass ? "eye" : "eye-off"}
-            onPress={() => setHidePass(!hidePass)}
-          />
-        }
+        secureTextEntry={hidePass} // Control de texto seguro
+        rightIcon={hidePass ? "eye" : "eye-off"} // Alterna íconos dinámicamente
+        onRightIconPress={() => setHidePass(!hidePass)} // Alterna el estado
+        underlineColor={Colors.blue} // Color de subrayado
+        activeUnderlineColor={Colors.blue} // Color activo
       />
 
       <View style={styles.containerButtons}>

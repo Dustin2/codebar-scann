@@ -15,7 +15,6 @@ import {
 
 //expo api
 import { useCameraPermissions, CameraView } from "expo-camera";
-import { StatusBar } from "expo-status-bar";
 import { router } from "expo-router";
 
 // api
@@ -41,7 +40,6 @@ const Home = () => {
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-        <StatusBar style="dark" />
         <Text style={styles.message}>
           Es necesario otorgar permisos para usar la cámara.
         </Text>
@@ -90,11 +88,6 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.navbar}>
-        <Text style={styles.navText}>Escanear</Text>
-        {/* <Text style={styles.navText}>Escanear</Text> */}
-      </View>
-
       {!cameraVisible ? (
         <View style={styles.content}>
           {/* Botón para activar la cámara */}
