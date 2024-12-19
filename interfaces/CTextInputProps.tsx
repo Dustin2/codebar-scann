@@ -23,7 +23,6 @@ import { StyleProp, ViewStyle, TextStyle } from "react-native";
 //   secureTextEntry?: boolean;
 // }
 
-
 export interface CTextInputProps {
   label?: string;
   value?: string;

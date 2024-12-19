@@ -7,6 +7,8 @@ export interface CButtonProps {
   dark?: boolean;
   textColor: "black" | "white";
   rippleColor?: string;
+  activeUnderlineColor: string;
+  underlineColor: string;
   icon?: string;
   onPress?: () => void;
   children?: React.ReactNode; // Add children here

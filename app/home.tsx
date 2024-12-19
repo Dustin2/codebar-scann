@@ -18,7 +18,7 @@ import { useCameraPermissions, CameraView } from "expo-camera";
 import { router } from "expo-router";
 
 // api
-import { getRolloByCodigo } from "../assets/api/RolloApi";
+import { rolls } from "../assets/api/rolls";
 import { Colors } from "../constants/Colors";
 
 const Home = () => {
@@ -59,7 +59,7 @@ const Home = () => {
     setScannedData(data);
     // Alert.alert("Código Escaneado", `Tipo: ${type}\nDatos: ${data}`);
     await fetchRolloData(data);
-    router.push("/assingPositions");
+    router.push("/infoRoll");
   };
 
   const fetchRolloData = async (codigo: string) => {
@@ -70,15 +70,24 @@ const Home = () => {
 
     setLoading(true);
     try {
-      const data = await getRolloByCodigo(codigo);
+      const data = await rolls(codigo);
       setRolloData(data);
 
       if (data.Error === 1) {
         Alert.alert("Rollo No Encontrado", data.Mensaje);
       } else {
-        // Alert.alert("Éxito", "Datos obtenidos correctamente");
-        router.push("/assingPositions");
+        Alert.alert("Éxito", "Datos obtenidos correctamente");
+        router.push("/infoRoll");
+
+        // router.push({
+        //   pathname: "/ifoRoll",
+        //   params: { rolls: JSON.stringify(data) },
+        // });
       }
+      router.push({
+        pathname: "/infoRoll",
+        params:{ rolloData :JSON.stringify(data)}
+      });
     } catch (error) {
       Alert.alert("Error", "No se pudo obtener la información del rollo.");
     } finally {
