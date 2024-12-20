@@ -1,17 +1,31 @@
+//react
 import React, { useState } from "react";
+
+//rn
 import { View, Text, StyleSheet, Alert, ActivityIndicator } from "react-native";
+//expo
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+
+//custom componets
 import { CTextInput } from "../componets/Input/CTextinput";
 import { CButton } from "../componets/Button/CButton";
-import { Colors } from "@/constants/Colors";
-import { loginUser } from "../assets/api/loginUser"
+
+//constans
+import { Colors } from "../constants/Colors";
+
+//api
+import { loginUser } from "../assets/api/loginUser";
 
 const Index = () => {
+  //use for move entry screens
+  const router = useRouter();
+
+  // usestates
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+  const [hidePass, setHidePass] = useState(true);
 
   const handleLogin = async () => {
     if (!user || !password) {
@@ -22,16 +36,20 @@ const Index = () => {
     setLoading(true);
     try {
       const result = await loginUser(user, password);
-
-      // Verificamos si el servidor indica que el usuario existe
-      if (result.Error === 1) {
-        Alert.alert("Error", result.Mensaje || "Usuario o contraseña incorrectos.");
-      } else {
-        // Alert.alert("Éxito", "Inicio de sesión exitoso.");
+      if (result?.Exito) {
+        Alert.alert("Éxito", "Inicio de sesión exitoso.");
         router.push("/home");
+      } else {
+        const errorMessage =
+          result?.Mensaje || "Usuario o contraseña incorrectos.";
+        Alert.alert("Error", errorMessage);
       }
     } catch (error) {
-      Alert.alert("Error", error.message || "Ocurrió un problema con el inicio de sesión.");
+      console.error("Error en el login:", error);
+      Alert.alert(
+        "Error",
+        error.message || "Ocurrió un problema con el inicio de sesión."
+      );
     } finally {
       setLoading(false);
     }
@@ -49,18 +67,22 @@ const Index = () => {
         style={styles.input}
         mode="outlined"
         keyboardType="email-address"
-        autoCapitalize="none"
+        // autoCapitalize="none"
         rightIcon="account"
+        underlineColor={Colors.blue}
+        activeUnderlineColor={Colors.blue}
       />
-
       <CTextInput
         label="Contraseña"
         value={password}
         onChangeText={setPassword}
         style={styles.input}
         mode="outlined"
-        secureTextEntry
-        rightIcon="eye"
+        secureTextEntry={hidePass} // Control de texto seguro
+        rightIcon={hidePass ? "eye" : "eye-off"} // Alterna íconos dinámicamente
+        onRightIconPress={() => setHidePass(!hidePass)} // Alterna el estado
+        underlineColor={Colors.blue} // Color de subrayado
+        activeUnderlineColor={Colors.blue} // Color activo
       />
 
       <View style={styles.containerButtons}>
@@ -77,6 +99,16 @@ const Index = () => {
           />
         )}
       </View>
+      <CButton
+        mode="contained"
+        onPress={() => {
+          router.push("/home");
+        }}
+        style={styles.button}
+        buttonColor={Colors.blue}
+        text="posiciones"
+        textColor="white"
+      />
     </View>
   );
 };
@@ -100,6 +132,7 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 15,
+    // alignSelf:'center',
   },
   button: {
     marginBottom: 15,

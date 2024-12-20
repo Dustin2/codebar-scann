@@ -15,24 +15,26 @@ export const CTextInput: React.FC<CTextInputProps> = ({
   disable = false,
   onChangeText,
   leftIcon,
-  onRightIconPress,
   rightIcon,
+  onRightIconPress,
+  secureTextEntry,
+  activeUnderlineColor,
+  underlineColor,
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
       <TextInput
         label={label}
-        disabled={disable}
         value={value}
         onChangeText={onChangeText}
         mode={mode}
         keyboardType={keyboardType}
+        secureTextEntry={secureTextEntry}
+        disabled={disable}
+        underlineColor={underlineColor}
+        activeUnderlineColor={activeUnderlineColor}
         style={[styles.input, style]}
-        left={
-          leftIcon ? (
-            <TextInput.Icon icon={leftIcon} style={styles.icon} />
-          ) : undefined
-        }
+        left={leftIcon ? <TextInput.Icon icon={leftIcon} /> : undefined}
         right={
           rightIcon ? (
             <TextInput.Icon
@@ -49,10 +51,10 @@ export const CTextInput: React.FC<CTextInputProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 8, // Espaciado para el contenedor
+    marginVertical: 8, // Espaciado entre los inputs
   },
   input: {
-    padding: 8, // Espaciado interno del TextInput
+    paddingHorizontal: 8, // Ajuste del espaciado interno
   },
   icon: {
     justifyContent: "center", // Centra el contenido verticalmente

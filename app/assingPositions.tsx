@@ -1,123 +1,124 @@
-// import React from "react";
-// import { View, Text, StyleSheet } from "react-native";
-// import { Button, Drawer, Paragraph, TextInput } from "react-native-paper";
-// const AssingPositions = () => {
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.title}>Asigna una posición al rollo</Text>
-//       <View style={styles.grid}>
-//         {/* Populate this grid with the positions */}
-//           {Array.from(Array(5).keys()).map((row) => (
-//           <View key={row} style={styles.row}>
-//             {Array.from(Array(8).keys()).map((col) => (
-//               <View key={col} style={styles.box}>
-//                 <Text style={styles.boxText}>{`P${row + 1}${col + 1}`}</Text>
-//               </View>
-//             ))}
-//           </View>
-//     ))}
-//       </View>
-//       {/* Fila Sections */}
-//       {[...Array(5).keys()].map((i) => (
-//         <Drawer.Section key={i} title={`Fila ${i + 2}`}>
-//           <Drawer.Item label={`Item ${i + 1}`} />
-//           <Drawer.Item label={`Item ${i + 2}`} />
-//         </Drawer.Section>
-//       ))}
-//       <Button mode="contained" style={styles.button}>
-//         Siguiente
-//       </Button>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 20,
-//     backgroundColor: "#f7f8fa",
-//   },
-//   title: {
-//     fontSize: 20,
-//     fontWeight: "bold",
-//     marginBottom: 10,
-//   },
-//   grid: {
-//     flexDirection: "column",
-//     flexWrap: "wrap",
-//     marginBottom: 20,
-//   },
-//   row: {
-//     flexDirection: "row",
-//     justifyContent: "space-between",
-//   },
-//   box: {
-//     width: "12%",
-//     height: 60,
-//     backgroundColor: "#fff",
-//     borderColor: "#ddd",
-//     borderWidth: 1,
-//     alignItems: "center",
-//     justifyContent: "center",
-//     margin: 2,
-//     borderRadius: 5,
-//   },
-//   boxText: {
-//     fontWeight: "bold",
-//   },
-//   button: {
-//     marginTop: 10,
-//   },
-// });
-
-// export default AssingPositions;
-
-
 import React, { useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
-import { List, Button } from "react-native-paper";
+import {
+  View,
+  StyleSheet,
+  Text,
+  Alert,
+  ActivityIndicator,
+  ScrollView,
+} from "react-native";
+import { Button, TextInput } from "react-native-paper";
+import {
+  getPositions,
+  getLayers,
+  getRows,
+} from "../assets/api/positionsContainer"; // Asegúrate de que esta función esté bien implementada
 
-type DropdownItemProps = {
-  title: string;
-  isOpen: boolean;
-  onPress: () => void;
-};
+const AssignPositions = () => {
+  const [loading, setLoading] = useState(false);
+  const [text, setText] = useState("");
+  const [data, setData] = useState<string | null>(null);
+  const [data2, setData2] = useState<string | null>(null);
+  const [data3, setData3] = useState<string | null>(null);
 
-const DropdownItem: React.FC<DropdownItemProps> = ({ title, isOpen, onPress }) => {
-  return (
-    <List.Accordion
-      title={title}
-      expanded={isOpen}
-      onPress={onPress}
-      style={styles.accordion}
-    >
-      <List.Item title="Contenido desplegable" />
-    </List.Accordion>
-  );
-};
-
-const home = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const handlePress = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
+  const fetchData = async (codigo: string) => {
+    if (!codigo) {
+      Alert.alert("Error", "Por favor, ingresa un código válido.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await getPositions(codigo); // Llama a tu API
+      // const response1 = await getPositions(codigo); // Llama a tu API
+      // const response2 = await getPositions(codigo); // Llama a tu API
+      setData(JSON.stringify(response, null, 2)); // Convierte el JSON en string para mostrar
+      if (response.error === 1) {
+        Alert.alert("Error", response.message);
+      } else {
+        Alert.alert("Éxito", "Datos obtenidos correctamente");
+      }
+    } catch (error) {
+      Alert.alert("Error", "No se pudo obtener la información.");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchData2 = async (codigo: string) => {
+    if (!codigo) {
+      Alert.alert("Error", "Por favor, ingresa un código válido.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await getRows(codigo); // Llama a tu API
+      // const response1 = await getPositions(codigo); // Llama a tu API
+      // const response2 = await getPositions(codigo); // Llama a tu API
+      setData2(JSON.stringify(response, null, 2)); // Convierte el JSON en string para mostrar
+      if (response.error === 1) {
+        Alert.alert("Error", response.message);
+      } else {
+        Alert.alert("Éxito", "Datos obtenidos correctamente");
+      }
+    } catch (error) {
+      Alert.alert("Error", "No se pudo obtener la información.");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const fetchData3 = async (codigo: string) => {
+    if (!codigo) {
+      Alert.alert("Error", "Por favor, ingresa un código válido.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await getLayers(codigo); // Llama a tu API
+      // const response1 = await getPositions(codigo); // Llama a tu API
+      // const response2 = await getPositions(codigo); // Llama a tu API
+      setData3(JSON.stringify(response, null, 2)); // Convierte el JSON en string para mostrar
+      if (response.error === 1) {
+        Alert.alert("Error", response.message);
+      } else {
+        Alert.alert("Éxito", "Datos obtenidos correctamente");
+      }
+    } catch (error) {
+      Alert.alert("Error", "No se pudo obtener la información.");
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.title}>Asigna una posición al rollo</Text>
-      {["Fila 1", "Fila 2", "Fila 3", "Fila 4", "Fila 5"].map((title, index) => (
-        <DropdownItem
-          key={index}
-          title={title}
-          isOpen={openIndex === index}
-          onPress={() => handlePress(index)}
-        />
-      ))}
-      <Button mode="contained" style={styles.button} onPress={() => console.log("Siguiente")}>Siguiente</Button>
-    </View>
+      <TextInput
+        label="Código"
+        value={text}
+        onChangeText={setText}
+        style={styles.input}
+      />
+      <Button
+        mode="contained"
+        onPress={() => {
+          fetchData(text), fetchData2(text), fetchData3(text);
+        }}
+        style={styles.button}
+        disabled={loading}
+      >
+        {loading ? <ActivityIndicator color="white" /> : "Obtener datos"}
+      </Button>
+
+      {data && <Text style={styles.result}>{data}</Text>}
+      {/* {data && <Text style={styles.result}>{data2}</Text>} */}
+      {data && <Text style={styles.result}>{data3}</Text>}
+    </ScrollView>
   );
 };
+
+export default AssignPositions;
 
 const styles = StyleSheet.create({
   container: {
@@ -132,19 +133,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: "#00296b",
   },
-  accordion: {
-    backgroundColor: "#ffffff",
-    borderRadius: 5,
-    marginBottom: 10,
-    elevation: 2,
+  input: {
+    marginBottom: 20,
   },
   button: {
     marginTop: 20,
     borderRadius: 5,
     backgroundColor: "#00296b",
   },
+  result: {
+    marginTop: 20,
+    fontSize: 16,
+    color: "#333",
+  },
 });
-
-export default home;
-
-

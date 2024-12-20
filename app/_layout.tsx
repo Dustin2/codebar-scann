@@ -1,43 +1,74 @@
-//react
 import React from "react";
+import { SafeAreaView, TouchableOpacity, Text } from "react-native";
+// import { Header } from "@react-navigation/elements";
+import { StatusBar } from "expo-status-bar";
 
-//react native
-import { SafeAreaView } from "react-native-safe-area-context";
-//expo router
-import { Stack } from "expo-router";
-
-//colors
-import { Colors } from "@/constants/Colors";
-
-///expo splash screens
-
-import * as SplashScreen from "expo-splash-screen";
-import * as Font from "expo-font";
-
+import { Stack, useRouter } from "expo-router";
+import { Colors } from "../constants/Colors";
 
 const RootLayout = () => {
+  //use for move entry screens
+  const router = useRouter();
+
+  // Function to handle exit logic
+  const handleExit = () => {
+    // You can define your exit logic here, for example, navigate to a login screen or close the app
+    console.log("Exit button pressed");
+    router.push("/");
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {/* <StatusBar style="dark"  translucent backgroundColor={Colors.blue}/> */}
-      {/* Stack debe estar directamente dentro de SafeAreaView */}
       <Stack
         screenOptions={{
-          headerShown: false,
+          headerShown: true, // Ensure the header is shown
+          headerTitleAlign: "center", // Center the title
+          headerStyle: {
+            backgroundColor: Colors.darkBlue, // Set the background color of the header
+          },
+          headerTintColor: "white", // Set the title text color to white
         }}
       >
         <Stack.Screen
           name="index"
           options={{
+            title: "Index Screen", // Add a title for the index screen
             headerShown: false,
           }}
         />
         <Stack.Screen
           name="home"
           options={{
-            headerShown: false,
+            title: "Escanear",
+            // headerLeft: false
+            // ,
+            headerBackVisible: false,
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={handleExit}
+                style={{ marginRight: 15 }}
+              >
+                <Text style={{ color: "white" }}>Exit</Text>
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="assingPositions"
+          options={{
+            title: "Assign Positions",
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={handleExit}
+                style={{ marginRight: 15 }}
+              >
+                <Text style={{ color: "white" }}>Exit</Text>
+              </TouchableOpacity>
+            ),
           }}
         />
       </Stack>
+      <StatusBar style="light" />
     </SafeAreaView>
   );
 };
