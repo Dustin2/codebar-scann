@@ -59,7 +59,7 @@ const Home = () => {
     setScannedData(data);
     // Alert.alert("Código Escaneado", `Tipo: ${type}\nDatos: ${data}`);
     await fetchRolloData(data);
-    router.push("/infoRoll");
+    router.push("/assingPositions");
   };
 
   const fetchRolloData = async (codigo: string) => {
@@ -77,7 +77,7 @@ const Home = () => {
         Alert.alert("Rollo No Encontrado", data.Mensaje);
       } else {
         Alert.alert("Éxito", "Datos obtenidos correctamente");
-        router.push("/infoRoll");
+        router.push("/assingPositions");
 
         // router.push({
         //   pathname: "/ifoRoll",
@@ -86,7 +86,7 @@ const Home = () => {
       }
       router.push({
         pathname: "/infoRoll",
-        params:{ rolloData :JSON.stringify(data)}
+        params: { rolloData: JSON.stringify(data) },
       });
     } catch (error) {
       Alert.alert("Error", "No se pudo obtener la información del rollo.");

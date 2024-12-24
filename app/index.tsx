@@ -102,7 +102,7 @@ const Index = () => {
       <CButton
         mode="contained"
         onPress={() => {
-          router.push("/home");
+          router.push("/assingPositions");
         }}
         style={styles.button}
         buttonColor={Colors.blue}

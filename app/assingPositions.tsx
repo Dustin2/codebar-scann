@@ -12,77 +12,44 @@ import {
   getPositions,
   getLayers,
   getRows,
-} from "../assets/api/positionsContainer"; // Asegúrate de que esta función esté bien implementada
+} from "../assets/api/positionsContainer";
 
 const AssignPositions = () => {
   const [loading, setLoading] = useState(false);
   const [text, setText] = useState("");
-  const [data, setData] = useState<string | null>(null);
-  const [data2, setData2] = useState<string | null>(null);
-  const [data3, setData3] = useState<string | null>(null);
+  const [data, setData] = useState([]);
+  const [data2, setData2] = useState([]);
+  const [data3, setData3] = useState([]);
 
-  const fetchData = async (codigo: string) => {
-    if (!codigo) {
+  const handleFetchData = async () => {
+    if (!text) {
       Alert.alert("Error", "Por favor, ingresa un código válido.");
       return;
     }
+
     setLoading(true);
+
     try {
-      const response = await getPositions(codigo); // Llama a tu API
-      // const response1 = await getPositions(codigo); // Llama a tu API
-      // const response2 = await getPositions(codigo); // Llama a tu API
-      setData(JSON.stringify(response, null, 2)); // Convierte el JSON en string para mostrar
-      if (response.error === 1) {
-        Alert.alert("Error", response.message);
-      } else {
-        Alert.alert("Éxito", "Datos obtenidos correctamente");
+      const [positionsResponse, rowsResponse, layersResponse] = await Promise.all([
+        getPositions(text),
+        getRows(text),
+        getLayers(text),
+      ]);
+
+      const { Data: positionsData, Error: positionsError } = positionsResponse;
+      const { Data: rowsData, Error: rowsError } = rowsResponse;
+      const { Data: layersData, Error: layersError } = layersResponse;
+
+      if (positionsError || rowsError || layersError) {
+        Alert.alert("Error", "Hubo un problema obteniendo algunos datos.");
+        return;
       }
-    } catch (error) {
-      Alert.alert("Error", "No se pudo obtener la información.");
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  const fetchData2 = async (codigo: string) => {
-    if (!codigo) {
-      Alert.alert("Error", "Por favor, ingresa un código válido.");
-      return;
-    }
-    setLoading(true);
-    try {
-      const response = await getRows(codigo); // Llama a tu API
-      // const response1 = await getPositions(codigo); // Llama a tu API
-      // const response2 = await getPositions(codigo); // Llama a tu API
-      setData2(JSON.stringify(response, null, 2)); // Convierte el JSON en string para mostrar
-      if (response.error === 1) {
-        Alert.alert("Error", response.message);
-      } else {
-        Alert.alert("Éxito", "Datos obtenidos correctamente");
-      }
-    } catch (error) {
-      Alert.alert("Error", "No se pudo obtener la información.");
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  const fetchData3 = async (codigo: string) => {
-    if (!codigo) {
-      Alert.alert("Error", "Por favor, ingresa un código válido.");
-      return;
-    }
-    setLoading(true);
-    try {
-      const response = await getLayers(codigo); // Llama a tu API
-      // const response1 = await getPositions(codigo); // Llama a tu API
-      // const response2 = await getPositions(codigo); // Llama a tu API
-      setData3(JSON.stringify(response, null, 2)); // Convierte el JSON en string para mostrar
-      if (response.error === 1) {
-        Alert.alert("Error", response.message);
-      } else {
-        Alert.alert("Éxito", "Datos obtenidos correctamente");
-      }
+
+      setData(positionsData || []);
+      setData2(rowsData || []);
+      setData3(layersData || []);
+
+      Alert.alert("Éxito", "Datos obtenidos correctamente.");
     } catch (error) {
       Alert.alert("Error", "No se pudo obtener la información.");
       console.error(error);
@@ -102,18 +69,25 @@ const AssignPositions = () => {
       />
       <Button
         mode="contained"
-        onPress={() => {
-          fetchData(text), fetchData2(text), fetchData3(text);
-        }}
+        onPress={handleFetchData}
         style={styles.button}
         disabled={loading}
       >
         {loading ? <ActivityIndicator color="white" /> : "Obtener datos"}
       </Button>
 
-      {data && <Text style={styles.result}>{data}</Text>}
-      {/* {data && <Text style={styles.result}>{data2}</Text>} */}
-      {data && <Text style={styles.result}>{data3}</Text>}
+      <View style={styles.dataSection}>
+        <Text style={styles.dataTitle}>Posiciones:</Text>
+        {data.length > 0 ? (
+          data.map((item, index) => (
+            <Text key={index} style={styles.dataItem}>
+              ID Posición: {item.id_posicion}
+            </Text>
+          ))
+        ) : (
+          <Text style={styles.noData}>No hay datos disponibles</Text>
+        )}
+      </View>
     </ScrollView>
   );
 };
@@ -141,9 +115,23 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: "#00296b",
   },
-  result: {
+  dataSection: {
     marginTop: 20,
+  },
+  dataTitle: {
     fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 10,
     color: "#333",
+  },
+  dataItem: {
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 5,
+  },
+  noData: {
+    fontSize: 14,
+    color: "#999",
+    fontStyle: "italic",
   },
 });
