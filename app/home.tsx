@@ -59,7 +59,7 @@ const Home = () => {
     setScannedData(data);
     // Alert.alert("Código Escaneado", `Tipo: ${type}\nDatos: ${data}`);
     await fetchRolloData(data);
-    router.push("/assingPositions");
+    router.push("/infoRoll");
   };
 
   const fetchRolloData = async (codigo: string) => {
@@ -77,7 +77,7 @@ const Home = () => {
         Alert.alert("Rollo No Encontrado", data.Mensaje);
       } else {
         Alert.alert("Éxito", "Datos obtenidos correctamente");
-        router.push("/assingPositions");
+        router.push("/infoRoll");
 
         // router.push({
         //   pathname: "/ifoRoll",
@@ -268,3 +268,6 @@ const styles = StyleSheet.create({
 });
 
 export default Home;
+
+
+
