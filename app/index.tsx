@@ -1,27 +1,22 @@
-//react
 import React, { useState } from "react";
-
-//rn
-import { View, Text, StyleSheet, Alert, ActivityIndicator } from "react-native";
-//expo
+import {
+  View,
+  Alert,
+  ActivityIndicator,
+  StyleSheet,
+KeyboardAvoidingView
+} from "react-native";
 import { useRouter } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-
-//custom componets
+import { Image } from "expo-image";
 import { CTextInput } from "../componets/Input/CTextinput";
 import { CButton } from "../componets/Button/CButton";
-
-//constans
 import { Colors } from "../constants/Colors";
-
-//api
 import { loginUser } from "../assets/api/loginUser";
+import { StatusBar } from "expo-status-bar";
 
 const Index = () => {
-  //use for move entry screens
   const router = useRouter();
 
-  // usestates
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
@@ -29,7 +24,7 @@ const Index = () => {
 
   const handleLogin = async () => {
     if (!user || !password) {
-      Alert.alert("Error", "Por favor ingresa usuario y contraseña.");
+      Alert.alert("Error", "Please enter email and password.");
       return;
     }
 
@@ -37,19 +32,15 @@ const Index = () => {
     try {
       const result = await loginUser(user, password);
       if (result?.Exito) {
-        Alert.alert("Éxito", "Inicio de sesión exitoso.");
+        Alert.alert("Success", "Login successful.");
         router.push("/home");
       } else {
-        const errorMessage =
-          result?.Mensaje || "Usuario o contraseña incorrectos.";
+        const errorMessage = result?.Mensaje || "Incorrect email or password.";
         Alert.alert("Error", errorMessage);
       }
     } catch (error) {
-      console.error("Error en el login:", error);
-      Alert.alert(
-        "Error",
-        error.message || "Ocurrió un problema con el inicio de sesión."
-      );
+      console.error("Login error:", error);
+      Alert.alert("Error", error.message || "An error occurred during login.");
     } finally {
       setLoading(false);
     }
@@ -57,58 +48,76 @@ const Index = () => {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="dark" />
-      <Text style={styles.title}>GRUPO HAZESA</Text>
-
-      <CTextInput
-        label="Usuario"
-        value={user}
-        onChangeText={setUser}
-        style={styles.input}
-        mode="outlined"
-        keyboardType="email-address"
-        // autoCapitalize="none"
-        rightIcon="account"
-        underlineColor={Colors.blue}
-        activeUnderlineColor={Colors.blue}
-      />
-      <CTextInput
-        label="Contraseña"
-        value={password}
-        onChangeText={setPassword}
-        style={styles.input}
-        mode="outlined"
-        secureTextEntry={hidePass} // Control de texto seguro
-        rightIcon={hidePass ? "eye" : "eye-off"} // Alterna íconos dinámicamente
-        onRightIconPress={() => setHidePass(!hidePass)} // Alterna el estado
-        underlineColor={Colors.blue} // Color de subrayado
-        activeUnderlineColor={Colors.blue} // Color activo
-      />
-
-      <View style={styles.containerButtons}>
-        {loading ? (
-          <ActivityIndicator size="large" color={Colors.blue} />
-        ) : (
-          <CButton
-            mode="contained"
-            onPress={handleLogin}
-            style={styles.button}
-            buttonColor={Colors.blue}
-            text="Ingresar"
-            textColor="white"
-          />
-        )}
+      <StatusBar style="light" backgroundColor={Colors.darkBlue} />
+      {/* Logo */}
+      <View style={{}}>
+        <Image
+          source={require("../assets/images/logo-header-transformed.png")}
+          style={styles.logoTop}
+          contentFit="contain"
+        />
       </View>
-      <CButton
-        mode="contained"
-        onPress={() => {
-          router.push("/assingPositions");
-        }}
-        style={styles.button}
-        buttonColor={Colors.blue}
-        text="posiciones"
-        textColor="white"
-      />
+
+      {/* Form */}
+      <View style={styles.formContainer}>
+        <CTextInput
+          label="Email"
+          value={user}
+          onChangeText={setUser}
+          underlineColor={Colors.blue}
+          activeUnderlineColor={Colors.blue}
+          activeOutlineColor={Colors.blue}
+          style={styles.input}
+          keyboardType="email-address"
+        />
+        <CTextInput
+          label="Password"
+          value={password}
+          onChangeText={setPassword}
+          style={styles.input}
+          underlineColor={Colors.blue}
+          activeUnderlineColor={Colors.blue}
+          activeOutlineColor={Colors.blue}
+
+          secureTextEntry={hidePass}
+          rightIcon={hidePass ? "eye" : "eye-off"}
+          onRightIconPress={() => setHidePass(!hidePass)}
+        />
+
+        <View style={styles.containerButtons}>
+          {loading ? (
+            <ActivityIndicator size="large" color={Colors.blue} />
+          ) : (
+            <CButton
+              mode="contained"
+              onPress={handleLogin}
+              style={styles.button}
+              buttonColor={Colors.blue}
+              text="LOGIN"
+              textColor="white"
+            />
+          )}
+        </View>
+      </View>
+
+      {/* Footer */}
+      <View style={styles.footerContainer}>
+        {/* <CButton
+          mode="contained"
+          onPress={() => router.push("/home")}
+          style={styles.button}
+          buttonColor={Colors.blue}
+          text="inicio"
+          textColor="white"
+        /> */}
+      </View>
+      <View style={{}}>
+        <Image
+          source={require("../assets/images/logo-footer.jpg")}
+          style={styles.logoTop}
+          contentFit="contain"
+        />
+      </View>
     </View>
   );
 };
@@ -117,26 +126,42 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#ffffff",
     paddingHorizontal: 20,
   },
-  containerButtons: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
+  logoTop: {
+    height: 200,
+    width: 200,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
+
+  formContainer: {
+    width: "100%",
     marginBottom: 20,
   },
   input: {
     marginBottom: 15,
-    // alignSelf:'center',
+  },
+  forgotPasswordContainer: {
+    alignItems: "flex-end",
+    marginBottom: 20,
+  },
+  forgotPasswordText: {
+    color: Colors.blue,
+    textDecorationLine: "underline",
+  },
+  containerButtons: {
+    alignItems: "center",
   },
   button: {
-    marginBottom: 15,
-    marginTop: 15,
+    width: "100%",
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  footerContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

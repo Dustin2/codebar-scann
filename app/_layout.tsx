@@ -13,7 +13,7 @@ const RootLayout = () => {
   // Function to handle exit logic
   const handleExit = () => {
     // You can define your exit logic here, for example, navigate to a login screen or close the app
-    console.log("Exit button pressed");
+    // console.log("Exit button pressed");
     router.push("/");
   };
 
@@ -34,6 +34,10 @@ const RootLayout = () => {
           options={{
             title: "Index Screen", // Add a title for the index screen
             headerShown: false,
+            statusBarTranslucent: true,
+            // headerBackgroundcolor: Colors.darkBlue,
+            headerStyle: { backgroundColor: "white" },
+            headerTintColor: "black",
           }}
         />
         <Stack.Screen
@@ -68,7 +72,7 @@ const RootLayout = () => {
           }}
         />
       </Stack>
-      <StatusBar style="light" />
+      {/* <StatusBar style="light" backgroundColor={Colors.darkBlue} /> */}
     </SafeAreaView>
   );
 };

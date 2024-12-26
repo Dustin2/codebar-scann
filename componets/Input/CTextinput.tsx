@@ -18,8 +18,9 @@ export const CTextInput: React.FC<CTextInputProps> = ({
   rightIcon,
   onRightIconPress,
   secureTextEntry,
-  activeUnderlineColor,
-  underlineColor,
+  activeUnderlineColor ,
+  underlineColor  ,
+  activeOutlineColor
 }) => {
   return (
     <View style={[styles.container, containerStyle]}>
@@ -31,15 +32,17 @@ export const CTextInput: React.FC<CTextInputProps> = ({
         keyboardType={keyboardType}
         secureTextEntry={secureTextEntry}
         disabled={disable}
+        activeOutlineColor={activeOutlineColor}
         underlineColor={underlineColor}
         activeUnderlineColor={activeUnderlineColor}
         style={[styles.input, style]}
-        left={leftIcon ? <TextInput.Icon icon={leftIcon} /> : undefined}
+        left={leftIcon ? <TextInput.Icon icon={leftIcon} size={20} /> : undefined}
         right={
           rightIcon ? (
             <TextInput.Icon
               icon={rightIcon}
               onPress={onRightIconPress}
+              size={20}
               style={styles.icon}
             />
           ) : undefined
@@ -51,13 +54,18 @@ export const CTextInput: React.FC<CTextInputProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 8, // Espaciado entre los inputs
+    width: "100%",
+    marginVertical: 10,
   },
   input: {
-    paddingHorizontal: 8, // Ajuste del espaciado interno
+    fontSize: 16, // Tamaño de fuente más grande
+    height: 55, // Ajusta la altura para un diseño más espacioso
+    backgroundColor: "#f9f9f9", // Fondo claro para un estilo moderno
+    borderRadius: 8, // Bordes redondeados
   },
   icon: {
-    justifyContent: "center", // Centra el contenido verticalmente
-    alignItems: "center", // Centra el contenido horizontalmente
+    marginTop: 8, // Ajuste para centrar verticalmente en el input
+    marginRight: 5, // Espaciado entre el icono y el borde
   },
 });
+

@@ -37,11 +37,12 @@ export interface CTextInputProps {
   style?: StyleProp<TextStyle>;
   containerStyle?: StyleProp<ViewStyle>;
   disable?: boolean;
-  onChangeText: (text: string) => void;
+  onChangeText?: (text: string) => void;
   leftIcon?: string; // Cambiar a nombre de ícono como string
   rightIcon?: string; // Cambiar a nombre de ícono como string
   onRightIconPress?: () => void; // Acción para el ícono derecho
   underlineColor?: string;
+  activeOutlineColor?: string;
   activeUnderlineColor?: string;
   secureTextEntry?: boolean;
 }
